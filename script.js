@@ -11,6 +11,14 @@ function classesNeeded(present, total, target) {
     return x;
 }
 
+function classesCanSkip(present, total) {
+    let x = 0;
+    while (((present) / (total + x)) * 100 >= 75) {
+        x++;
+    }
+    return x - 1;
+}
+
 function calculate() {
 
     const subject = document.getElementById("subject").value;
@@ -35,18 +43,25 @@ function calculate() {
         📊 Current Attendance: ${percentage}%<br><br>
     `;
 
-    if (percentage >= 60) {
-        output += "✅ You already have 60% or more attendance.<br>";
-    } else {
+    if (percentage < 60) {
         const needed60 = classesNeeded(present, total, 60);
         output += `➡ Attend next <b>${needed60}</b> classes to reach 60%.<br>`;
+    } else {
+        output += "✅ You have more than 60% attendance.<br>";
     }
 
-    if (percentage >= 75) {
-        output += "✅ You already have 75% or more attendance.";
-    } else {
+    if (percentage < 75) {
         const needed75 = classesNeeded(present, total, 75);
         output += `➡ Attend next <b>${needed75}</b> classes to reach 75%.`;
+    } else {
+
+        const skip = classesCanSkip(present, total);
+
+        if (skip > 0) {
+            output += `🎉 You can skip <b>${skip}</b> classes and still maintain 75%.`;
+        } else {
+            output += `⚠ Try not to skip any classes.`;
+        }
     }
 
     document.getElementById("result").innerHTML = output;
